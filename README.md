@@ -8,4 +8,4 @@ chmod +x install_cockpit.sh
 
 ```
 ./install_cockpit.sh
-···
+```
