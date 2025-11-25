@@ -27,7 +27,6 @@ echo "2) 南科大源 (mirrors.sustech.edu.cn)"
 read -p "请输入选择 (1 或 2): " source_choice
 
 . /etc/os-release
-echo "当前 Debian 版本代号是: ${VERSION_CODENAME}"
 
 if [ "$source_choice" == "1" ]; then
     echo "选择了默认源"
