@@ -11,7 +11,7 @@ fi
 # 更新系统并安装常用包
 echo "更新系统并安装常用包"
 apt update
-apt install sudo vim lastlog2 wget build-essential gettext -y
+apt install sudo vim lastlog2 curl wget build-essential gettext -y
 
 # 安装并配置网络管理器
 echo "安装并配置网络管理器"
