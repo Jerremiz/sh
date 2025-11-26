@@ -39,6 +39,7 @@ else
     echo "deb http://deb.debian.org/debian ${VERSION_CODENAME}-backports main" > /etc/apt/sources.list.d/backports.list
 fi
 
+apt update
 apt install -t ${VERSION_CODENAME}-backports cockpit -y
 
 # 安装并启用 firewalld
