@@ -11,7 +11,7 @@ fi
 # 更新系统并安装常用包
 echo "更新系统并安装常用包"
 apt update
-apt install sudo vim lastlog2 curl wget build-essential gettext -y
+apt install sudo vim lastlog2 curl wget build-essential gettext nodejs -y
 
 # 安装并配置网络管理器
 echo "安装并配置网络管理器"
@@ -54,11 +54,8 @@ cd ~/Downloads
 
 # 下载并解压 cockpit 插件
 echo "下载并解压 cockpit 插件"
-wget https://github.com/cockpit-project/cockpit-files/releases/download/27/cockpit-files-27.tar.xz
-wget https://github.com/chabad360/cockpit-docker/releases/download/16/cockpit-docker-16.tar.xz
-
-tar -xf cockpit-files-27.tar.xz
-tar -xf cockpit-docker-16.tar.xz
+git clone https://github.com/cockpit-project/cockpit-files.git # 文件管理器
+git clone https://github.com/chabad360/cockpit-docker.git # docker面板
 
 # 安装 cockpit 插件
 echo "安装 cockpit 插件"
