@@ -102,6 +102,7 @@ make install
 cd ~/Downloads/cockpit-docker
 make install
 
+
 # 安装 Docker
 echo "是否安装 Docker？"
 echo "1) 是"
@@ -138,7 +139,7 @@ if [ "$docker_choice" == "1" ]; then
 
   apt install ca-certificates curl -y
   install -m 0755 -d /etc/apt/keyrings
-  curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
+  curl -fsSL "${DOCKER_MIRROR}/gpg" -o /etc/apt/keyrings/docker.asc
   chmod a+r /etc/apt/keyrings/docker.asc
 
   cat > /etc/apt/sources.list.d/docker.sources <<EOF
