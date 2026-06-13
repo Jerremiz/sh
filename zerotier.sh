@@ -14,20 +14,11 @@ echo
 
 read -p "请输入 ZeroTier 网络 ID: " ZT_NETWORK_ID
 read -p "请输入公网出口网卡名称，例如 eth0 / ens3: " WAN_IF
-read -p "请输入 ZeroTier 网卡名称，例如 ztabcdefg: " ZT_IF
 
 echo
 echo "ZeroTier 网络 ID: $ZT_NETWORK_ID"
 echo "公网出口网卡: $WAN_IF"
-echo "ZeroTier 网卡: $ZT_IF"
 echo
-
-read -p "确认继续安装并配置？[y/N]: " CONFIRM
-
-if [ "$CONFIRM" != "y" ] && [ "$CONFIRM" != "Y" ]; then
- echo "已取消"
- exit 0
-fi
 
 # 安装依赖
 apt update
@@ -62,6 +53,16 @@ echo
 
 read -p "授权完成后按回车继续..."
 
+echo
+echo "当前 ZeroTier 网络状态："
+zerotier-cli listnetworks || true
+
+echo
+read -p "请输入 ZeroTier 网卡名称，例如 ztabcdefg: " ZT_IF
+
+echo "ZeroTier 网卡: $ZT_IF"
+echo
+
 # 开启 IPv4 转发
 echo
 echo "开启 IPv4 转发"
@@ -76,9 +77,15 @@ sysctl -p /etc/sysctl.d/99-zerotier-exit-node.conf
 echo
 echo "配置 iptables 转发规则"
 
-iptables -t nat -C POSTROUTING -o "$WAN_IF" -j MASQUERADE 2>/dev/null || iptables -t nat -A POSTROUTING -o "$WAN_IF" -j MASQUERADE
-iptables -C FORWARD -i "$ZT_IF" -o "$WAN_IF" -j ACCEPT 2>/dev/null || iptables -A FORWARD -i "$ZT_IF" -o "$WAN_IF" -j ACCEPT
-iptables -C FORWARD -i "$WAN_IF" -o "$ZT_IF" -m state --state RELATED,ESTABLISHED -j ACCEPT 2>/dev/null || iptables -A FORWARD -i "$WAN_IF" -o "$ZT_IF" -m state --state RELATED,ESTABLISHED -j ACCEPT
+if ! iptables -t nat -C POSTROUTING -o "$WAN_IF" -j MASQUERADE 2>/dev/null; then
+ iptables -t nat -A POSTROUTING -o "$WAN_IF" -j MASQUERADE
+fi
+if ! iptables -C FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT 2>/dev/null; then
+ iptables -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+fi
+if ! iptables -C FORWARD -i "$ZT_IF" -o "$WAN_IF" -j ACCEPT 2>/dev/null; then
+ iptables -A FORWARD -i "$ZT_IF" -o "$WAN_IF" -j ACCEPT
+fi
 
 # 保存 iptables 规则
 echo
